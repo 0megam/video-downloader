@@ -1,0 +1,4 @@
+apiVersion: v1
+description: YouTube downloader
+name: ydown
+version: 0.1.0
