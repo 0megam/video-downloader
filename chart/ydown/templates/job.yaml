@@ -1,15 +1,35 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: yu
+  name: "{{.Release.Name}}-videojob"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
 spec:
-  activeDeadlineSeconds: 100
   template:
     metadata:
-      name: pi
+      name: "{{.Release.Name}}"
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     spec:
       containers:
-      - name: pi
-        image: perl
-        command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+      - name: youtube-dl
+        image: "{{.Values.image.repository}}/{{.Values.image.tag}}"
+        imagePullPolicy: {{.Values.image.pullPolicy}}
+        command:
+        - youtube-dl
+        args:
+        - --help
+      - name: ffmpeg
+        image: "{{.Values.image.repository}}/{{.Values.image.tag}}"
+        imagePullPolicy: {{.Values.image.pullPolicy}}
+        command:
+        - sh
+        - -c
+        args:
+        - echo
+        - shit
       restartPolicy: Never
