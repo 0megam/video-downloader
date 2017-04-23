@@ -3,15 +3,14 @@ kind: Job
 metadata:
   name: "{{.Release.Name}}-videojob"
   labels:
-    heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
 spec:
+  activeDeadlineSeconds: {{.Values.activeDeadlineSeconds}}
   template:
     metadata:
       name: "{{.Release.Name}}"
       labels:
-        heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     spec:
@@ -27,9 +26,7 @@ spec:
         image: "{{.Values.image.repository}}/{{.Values.image.tag}}"
         imagePullPolicy: {{.Values.image.pullPolicy}}
         command:
-        - sh
-        - -c
+        - curl
         args:
-        - echo
-        - shit
-      restartPolicy: Never
+        - icanhazip.com
+      restartPolicy: {{.Values.restartPolicy}}
