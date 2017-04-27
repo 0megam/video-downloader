@@ -21,12 +21,17 @@ spec:
         command:
         - youtube-dl
         args:
-        - --help
-      - name: ffmpeg
-        image: "{{.Values.image.repository}}/{{.Values.image.tag}}"
-        imagePullPolicy: {{.Values.image.pullPolicy}}
-        command:
-        - curl
-        args:
-        - icanhazip.com
+      {{- range $key, $value := .Values.youtubedl.args }}
+        - --{{ $key }} {{ $value }}       
+      {{- end }}
+        - ffmpeg -i {} -filter_complex "scale=iw*min(1920/iw\,1080/ih):ih*min(1920/iw\,1080/ih),pad=1920:1080:(1920-iw*min(1920/iw\,1080/ih))/2:(1080-ih*min(1920/iw\,1080/ih))/2" -c:v libx264 -x264-params "nal-hrd=cbr" -b:v 6000k -profile:v high -level 4.0 -preset veryslow -pix_fmt yuv420p -r 25/1 -c:a aac -ar 44100 -ac 2 -b:a 192k /mnt/converted/output.mp4
+        - {{ .Values.url }}
+        volumeMounts:
+        - mountPath: /mnt/converted
+          name: nfs
+      volumes:
+      - name: nfs
+        nfs:
+          server: 10.132.0.4
+          path: "/opt/converted"
       restartPolicy: {{.Values.restartPolicy}}
