@@ -9,18 +9,8 @@ image:
   tag: youtube-dl:latest
   pullPolicy: Always
 resources:
-  limits:
-    cpu: 100m
-    memory: 128Mi
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 1000Mi
 url: https://www.youtube.com/watch?v=22kx0q5j-JA
-youtubedl:
-  args: 
-    exec: ''
-ffmpeg:
-  args:
-    filter_complex: "scale=iw*min(1920/iw,1080/ih):ih*min(1920/iw,1080/ih),pad=1920:1080:(1920-iw*min(1920/iw,1080/ih))/2:(1080-ih*min(1920/iw,1080/ih))/2"
-    264-paramsi: "nal-hrd=cbr"
 
